@@ -1,7 +1,7 @@
 var createError = require('http-errors');
 var express = require('express');
 const mongoose = require('mongoose')
-const mongoDb = 'mongodb+srv://user:<password>@cluster0.zo0buwq.mongodb.net/?retryWrites=true&w=majority' //replace user & password 
+const mongoDb = 'mongodb+srv://user:<password>@cluster0.zo0buwq.mongodb.net/local_library?retryWrites=true&w=majority' //replace user & password 
 mongoose.connect(mongoDb, {useNewUrlParser: true, useUnifiedTopology: true})
 const db = mongoose.connection
 db.on("error", console.error.bind(console, "Mongo db connection error"))
