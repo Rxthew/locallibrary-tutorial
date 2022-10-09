@@ -1,11 +1,47 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
+  <%- include('partials/head', {title: title}) %>
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-2">
+          <%- include('partials/sidebar') %>
+        </div>
+        <div class="col-sm-10">
+          <h2>Dynamic Content</h2>
+          <% if(error){%>
+            <p>Error getting dynamic content</p>
+          <%}
+          else{%>
+            <p>The library has the following record counts:</p>
+            <ul>
+              <li>
+                <strong>Books:</strong>
+                <span><%=data.bookCount%></span>
+              </li>
+              <li>
+                <strong>Copies:</strong>
+                <span><%=data.bookInstanceCount%></span>
+              </li>
+              <li>
+                <strong>Copies available:</strong>
+                <span><%=data.bookInstanceAvailableCount%></span>
+              </li>
+              <li>
+                <strong>Authors:</strong>
+                <span><%=data.authorCount%></span>
+              </li>
+              <li>
+                <strong>Genres:</strong>
+                <span><%=data.genreCount%></span>
+              </li>
+            </ul>      
+          <%}%>
+
+        </div>
+      </div>
+    </div>
   </body>
 </html>

@@ -15,6 +15,9 @@ exports.index = (req,res) => {
             bookInstanceCount : function(callback){
                 BookInstance.countDocuments({},callback)
             },
+            bookInstanceAvailableCount : function(callback){
+                BookInstance.countDocuments({status: 'Available'},callback)
+            },
             genreCount : function(callback){
                 Genre.countDocuments({},callback)
             },
