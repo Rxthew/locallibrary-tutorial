@@ -1,7 +1,18 @@
 const BookInstance = require('../models/bookinstance');
 
-exports.bookinstance_list = (req,res) => {
-    res.send('Not Implemented: Bookinstance list');
+exports.bookinstance_list = (req,res,next) => {
+    BookInstance.find()
+    .populate('book')
+    .exec(function(err,instanceList){
+        if(err){
+            return next(err)
+        }
+        res.render('bookinstance list',{
+            title: "List of Book Copies",
+            bookinstance_list: instanceList
+        })
+
+    })
 }
 
 exports.bookinstance_detail = (req,res) => {
