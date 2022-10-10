@@ -7,7 +7,7 @@ exports.bookinstance_list = (req,res,next) => {
         if(err){
             return next(err)
         }
-        res.render('bookinstance list',{
+        res.render('bookinstance_list',{
             title: "List of Book Copies",
             bookinstance_list: instanceList
         })
