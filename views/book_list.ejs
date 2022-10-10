@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <%- include('partials/head', {title: title}) %>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-2">
+          <%- include('partials/sidebar') %>
+        </div>
+        <div class="col-sm-10">
+            <h1><%= title %></h1>
+          <% if(Object.keys(book_list).length < 1){%>
+              <p>There are no books.</p>
+          <%}
+           else{
+            for(let book of book_list){%>
+              <li>
+                <a href=<%=book.url %>><%=book.title%> (<%=book.author.first_name%> <%=book.author.family_name%>)</a>
+              </li>
+          <%}
+        }%>      
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
