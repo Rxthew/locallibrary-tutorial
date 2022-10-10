@@ -16,7 +16,11 @@
             <ul>
             <%for(let author of author_list){%>
               <li>
-                <a href=<%=author.url %>>(<%=author.date_of_birth%> - <%author.date_of_death%>)</a>
+                <a href=<%=author.url %>><%=author.name%></a>
+                <span>
+                  <p>Born on: <%=author.dob && author.dob !== 'Invalid DateTime' ? author.dob : 'To be Determined'%></p></span>
+                <span>
+                  <p>Died on: <%=author.dod && author.dod !== 'Invalid DateTime' ? author.dod : 'To be Determined'%></p></span>
               </li>
           <%}%>
             </ul>
