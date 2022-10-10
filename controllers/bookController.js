@@ -35,8 +35,19 @@ exports.index = (req,res) => {
     )
 }
 
-exports.book_list = (req,res) => {
-    res.send('Not Implemented: Book list');
+exports.book_list = function(req,res,next){
+    Book.find({},'title author')
+    .sort({title: 1})
+    .populate('author')
+    .exec(function(err,bookList){
+        if(err){
+            return next(err)
+        }
+        else{
+            res.render('book_list',{title: 'Book List',book_list: bookList})
+        }
+    })
+    
 }
 
 exports.book_detail = (req,res) => {
