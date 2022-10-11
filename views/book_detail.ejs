@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <%- include('partials/head', {title: title}) %>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-2">
+          <%- include('partials/sidebar') %>
+        </div>
+        <div class="col-sm-10">
+            <h1>Book: <%= book.title %></h1>
+            <p>
+                <strong>Author: </strong>
+                <a href=<%=book.author.url %>><%=book.author.name%></a>
+            </p>
+            <p>
+                <strong>Summary: </strong>
+                <span><%=book.summary%></span>
+            </p>
+            <p>
+                <strong>ISBN: </strong>
+                <span><%=book.isbn%></span>
+            </p>
+            <p>
+                <strong>Genre: </strong>
+                <%for(let index=0;index < book.genre.length; index++){
+                    let val = book.genre[index]
+                    if(index === book.genre.length - 1){%>
+                    <a href=<%=val.url %>><%=val.name%></a>
+                    <%}
+                    else{%>
+                        <a href=<%=val.url %>><%=val.name%>,</a>
+                    <%}
+                }%>
+            </p>
+            <div style="margin-left:20px;margin-top:20px">
+                <h4>Copies</h4>
+                <% if(book_instances.length < 1){%>
+                    <p>There are no copies of this book in the library.</p>
+                <%}
+                else{%>
+                    <%for(let instance of book_instances){%>
+                        <hr>
+                        <% if(instance.status === 'Available'){%>
+                            <p class='text-success'><%=instance.status%></p>
+                        <%}
+                        else if(instance.status === 'Maintenance'){%>
+                            <p class='text-danger'><%=instance.status%></p>
+                        <%}
+                        else {%>
+                            <p class='text-warning'><%=instance.status%></p>
+                        <%}%>
+                        <p>
+                            <strong>Imprint: </strong>
+                            <span><%=instance.imprint%></span>
+                        </p>
+                        <%if(instance.status !== 'Available'){%>
+                            <p>
+                                <strong>Due back: </strong>
+                                <span><%=instance.due_back_formatted%></span>
+                            </p>
+                        <% }%>
+                        <p>
+                            <strong>Id: </strong>
+                            <a href=<%=instance.url %>><%=instance._id%></a>
+                        </p>
+                  <%} 
+                }%> 
+            </div>     
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
