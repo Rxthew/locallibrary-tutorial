@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <%- include('partials/head', {title: title}) %>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-2">
+          <%- include('partials/sidebar') %>
+        </div>
+        <div class="col-sm-10">
+            <h1>Author: <%= author.name %></h1>
+            <span>
+                <p>Born on: <%=author.dob && author.dob !== 'Invalid DateTime' ? author.dob : 'To be Determined'%></p>
+            </span>
+              <span>
+                <p>Died on: <%=author.dod && author.dod !== 'Invalid DateTime' ? author.dod : 'To be Determined'%></p>
+            </span>
+            <div style="margin-left:20px;margin-top:20px">
+                <h4>Books</h4>
+                <% if(author_books.length < 1){%>
+                    <p>This author has no books.</p>
+                <%}
+                 else{%>
+                  <dl>
+                  <%for(let book of author_books){%>
+                    <dt>
+                      <a href=<%=book.url %>><%=book.title%></a>  
+                     </dt>
+                    <dd>
+                        <%=book.summary%>
+                    </dd>
+                <%}%>
+                  </dl>
+              <%}%> 
+            </div>     
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
