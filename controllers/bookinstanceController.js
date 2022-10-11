@@ -15,8 +15,27 @@ exports.bookinstance_list = (req,res,next) => {
     })
 }
 
-exports.bookinstance_detail = (req,res) => {
-    res.send(`Not Implemented: Bookinstance detail: ${req.params.id}`);
+exports.bookinstance_detail = (req,res,next) => {
+    BookInstance.findById(req.params.id)
+    .populate('book')
+    .exec(
+        function bookDetail(err,bookinstance){
+            if(err){
+                return next(err)
+            }
+            if(bookinstance === null){
+                const genErr = new Error('Book copy not found')
+                genErr.status = 404
+                return next(genErr)
+            }
+            res.render('bookinstance_detail',{
+                title: `Copy: ${bookinstance.book.title}`,
+                bookinstance
+            })
+        }
+    )
+    
+    
 }
 
 exports.bookinstance_create_get = (req,res) => {

@@ -50,7 +50,7 @@ exports.book_list = function(req,res,next){
     
 }
 
-exports.book_detail = (req,res) => {
+exports.book_detail = (req,res,next) => {
     async.parallel({
         book: function(callback){
             Book.findById(req.params.id)
