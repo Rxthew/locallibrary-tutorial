@@ -1,4 +1,6 @@
 const Author = require('../models/author');
+const Book = require('../models/book')
+const async = require('async')
 
 exports.author_list = (req,res,next) => {
     Author.find()
@@ -39,7 +41,7 @@ exports.author_detail = (req,res,next) => {
         res.render('author_detail',{
             title: 'Author Detail',
             author: results.author,
-            author_books: results.authors_books
+            author_books: results.author_books
         })
 
     })
