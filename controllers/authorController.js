@@ -60,7 +60,7 @@ exports.author_create_post = [
     .withMessage('First name must be specified.')
     .isAlphanumeric()
     .withMessage('First name has non-alphanumeric characters.'),
-    bodu('family_name')
+    body('family_name')
     .trim()
     .isLength({min: 1})
     .escape()
