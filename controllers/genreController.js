@@ -1,6 +1,8 @@
 const Genre = require('../models/genre')
 const Book = require('../models/book')
 const async = require('async')
+const {body, validationResult} = require('express-validator')
+const { name } = require('ejs')
 
 
 
@@ -48,12 +50,48 @@ exports.genre_detail = (req,res,next) => {
 }
 
 exports.genre_create_get = (req,res) => {
-    res.send('Not Implemented: Genre create GET');
+    res.render('genre_form',{title: 'Create Genre'})
 }
 
-exports.genre_create_post = (req,res) => {
-    res.send('Not Implemented: Genre create POST');
-}
+exports.genre_create_post = [
+    body('name','Genre name required')
+    .trim()
+    .isLength({min: 1})
+    .escape(),
+
+    (req,res,next) => {
+        const errors = validationResult(req)
+        const genre = new Genre({name: req.body.name})
+        
+        if(!errors.isEmpty()){
+            res.render('genre_form', {
+                title: 'Create Genre',
+                errors: errors.array(),
+                genre : genre
+
+            })
+            return
+        }
+        else{
+            Genre.findOne({name: req.body.name}).exec((err,foundGenre)=>{
+                if(err){
+                    return next(err)
+                }
+                if(foundGenre){
+                    res.redirect(foundGenre.url)
+                }
+                else{
+                    genre.save((err)=>{
+                        if(err){
+                            return next(err)
+                        }
+                        res.redirect(genre.url)
+                    })
+                }
+            })
+        }
+    }
+]
 
 exports.genre_delete_get = (req,res) => {
     res.send('Not Implemented: Genre delete GET');
