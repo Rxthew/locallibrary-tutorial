@@ -2,6 +2,9 @@ const Book = require('../models/book');
 const Author = require('../models/author');
 const Genre = require('../models/genre');
 const BookInstance = require('../models/bookinstance');
+const {body, validationResult} = require('express-validator');
+
+
 
 const async = require('async');
 
@@ -83,13 +86,97 @@ exports.book_detail = (req,res,next) => {
     })
 }
 
-exports.book_create_get = (req,res) => {
-    res.send('Not Implemented: Book create GET');
+exports.book_create_get = (req,res,next) => {
+    async.parallel({
+        authors: function(callback){
+            Author.find(callback)
+        },
+        genres: function(callback){
+            Genre.find(callback)
+        }
+    }, function renderBook(err,results){
+        if(err){
+            return next(err)
+        }
+        res.render('book_form',{
+            title: 'Create Book',
+            authors: results.authors,
+            genres: results.genres
+        })
+    })
 }
 
-exports.book_create_post = (req,res) => {
-    res.send('Not Implemented: Book create POST');
-}
+exports.book_create_post = [
+    function genreArray(req,res,next){
+        if(!Array.isArray(req.body.genre)){
+            let genreBody = req.body.genre
+            req.body.genre = typeof genreBody === 'undefined' ? [] : [genreBody]
+        }
+        next()
+    },
+    body('title','Title must not be empty.')
+    .trim()
+    .isLength({min: 1})
+    .escape(),
+    body('summary','Summary must not be empty.')
+    .trim()
+    .isLength({min: 1})
+    .escape(),
+    body('isbn','ISBN must not be empty.')
+    .trim()
+    .isLength({min: 1})
+    .escape(),
+    body('genre.*').escape(),
+    function saveBook(req,res,next){
+        const errors = validationResult(req)
+        const book = new Book({
+            title: req.body.title,
+            author: req.body.author,
+            summary: req.body.summary,
+            isbn: req.body.isbn,
+            genre: req.body.genre
+        })
+
+        if(!errors.isEmpty()){
+            async.parallel({
+                authors: function(callback){
+                    Author.find(callback)
+                },
+                genres: function(callback){
+                    Genre.find(callback)
+                }
+            },function finishSaveBook(err,results){
+                if(err){
+                    return next(err)
+                }
+
+                for(const genre of results.genres){
+                    if(book.genre.includes(genre._id)){
+                        genre.checked = 'true'
+                    }
+                }
+                res.render('book_form',{
+                    title: 'Create Book',
+                    authors: results.authors,
+                    genres: results.genres,
+                    book,
+                    errors: errors.array()
+                })
+
+            })
+            return
+        }
+
+        book.save((err)=>{
+            if(err){
+                return next(err)
+            }
+        })
+
+        res.redirect(book.url)
+    }
+
+]
 
 exports.book_delete_get = (req,res) => {
     res.send('Not Implemented: Book delete GET');
