@@ -11,7 +11,7 @@
             <h1>Book: <%= book.title %></h1>
             <p>
                 <strong>Author: </strong>
-                <a href=<%=book.author.url %>><%=book.author.name%></a>
+                <a href='<%=book.author.url %>''><%=book.author.name%></a>
             </p>
             <p>
                 <strong>Summary: </strong>
@@ -26,10 +26,10 @@
                 <%for(let index=0;index < book.genre.length; index++){
                     let val = book.genre[index]
                     if(index === book.genre.length - 1){%>
-                    <a href=<%=val.url %>><%=val.name%></a>
+                    <a href='<%=val.url %>'><%=val.name%></a>
                     <%}
                     else{%>
-                        <a href=<%=val.url %>><%=val.name%>,</a>
+                        <a href='<%=val.url %>'><%=val.name%>,</a>
                     <%}
                 }%>
             </p>
@@ -62,7 +62,7 @@
                         <% }%>
                         <p>
                             <strong>Id: </strong>
-                            <a href=<%=instance.url %>><%=instance._id%></a>
+                            <a href='<%=instance.url %>'><%=instance._id%></a>
                         </p>
                   <%} 
                 }%> 
