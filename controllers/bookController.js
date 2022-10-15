@@ -136,7 +136,6 @@ exports.book_create_post = [
             isbn: req.body.isbn,
             genre: req.body.genre
         })
-
         if(!errors.isEmpty()){
             async.parallel({
                 authors: function(callback){
@@ -145,7 +144,7 @@ exports.book_create_post = [
                 genres: function(callback){
                     Genre.find(callback)
                 }
-            },function finishSaveBook(err,results){
+            },function backToForm(err,results){
                 if(err){
                     return next(err)
                 }
@@ -159,7 +158,7 @@ exports.book_create_post = [
                     title: 'Create Book',
                     authors: results.authors,
                     genres: results.genres,
-                    book,
+                    book : book,
                     errors: errors.array()
                 })
 
@@ -171,9 +170,11 @@ exports.book_create_post = [
             if(err){
                 return next(err)
             }
+            res.redirect(book.url)
         })
+       
 
-        res.redirect(book.url)
+       
     }
 
 ]
