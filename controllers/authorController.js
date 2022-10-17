@@ -102,12 +102,84 @@ exports.author_create_post = [
     }
 ]
 
-exports.author_delete_get = (req,res) => {
-    res.send('Not Implemented: Author delete GET');
+exports.author_delete_get = (req,res,next) => {
+    async.parallel(
+        {
+            author: function(callback){
+                Author.findById(req.params.id).exec(callback)
+            },
+            author_books: function(callback){
+                Book.find({author: req.params.id}).exec(callback)
+            },
+        }, 
+
+        function getDeleteAuthorForm(err,results){
+            if(err){
+                return next(err)
+            }
+            if(results.author == null){
+                res.redirect('/catalog/authors')
+            }
+            res.render('author_delete',{
+                title: 'Delete author',
+                author: results.author,
+                author_books: results.author_books
+            })
+
+        }
+
+    )
+    
 }
 
-exports.author_delete_post = (req,res) => {
-    res.send('Not Implemented: Author delete POST');
+exports.author_delete_post = (req,res,next) => {
+
+    const doesAuthorHaveBooks = function(authorBooks){
+        if(authorBooks.length > 0){
+            return true
+        }
+        else{
+            return false
+        }
+        
+    }
+
+    const deleteAuthor = function(){
+        Author.findByIdAndRemove(req.body.authorid, (err)=>{
+            if(err){
+                return next(err)
+            }
+        })
+    }
+
+    async.parallel({
+        author: function(callback){
+            Author.findById(req.params.id).exec(callback)
+        },
+        author_books: function(callback){
+            Book.find({author: req.params.id}).exec(callback)
+        },
+    },
+
+    function deleteAuthorProcess(err,results){
+        if(err){
+            return next(err)
+        }
+        if(doesAuthorHaveBooks(results.author_books)){
+            res.render('author_delete',{
+                title: 'Delete Author',
+                authors: results.author,
+                author_books: results.author_books
+            })
+        }
+        else{
+            deleteAuthor()
+            res.redirect('/catalog/authors')
+        }
+
+    }
+        
+    )
 }
 
 exports.author_update_get = (req,res) => {
