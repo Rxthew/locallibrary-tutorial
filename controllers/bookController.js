@@ -239,7 +239,7 @@ exports.book_update_get = (req,res,next) => {
     
 }
 
-exports.book_update_post = (req,res,next) => {
+exports.book_update_post = [
     helper.genreArray,
     body('title','Title must not be empty.')
     .trim()
@@ -305,4 +305,4 @@ exports.book_update_post = (req,res,next) => {
     }
 
 
-}
+]
