@@ -294,13 +294,13 @@ exports.book_update_post = [
             return
         }
 
-        Book.findByIdAndUpdate((req.params.id,book,{},(err,theBook)=>{
+        Book.findByIdAndUpdate(req.params.id,book,{},(err,theBook)=>{
             if(err){
                 return next(err)
             }
             res.redirect(theBook.url)
 
-        }))
+        })
        
     }
 

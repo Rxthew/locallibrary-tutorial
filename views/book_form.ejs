@@ -24,7 +24,7 @@
                         });
                         for(author of authors){
                             if(!(typeof book == 'undefined')){%>
-                                <option value='<%=author._id%>' <% if( author._id.toString() === book.author._id.toString()){%> selected=true <%}%>><%=author.name%></option>
+                                <option value='<%=author._id%>' <% if( author._id.toString() == book.author._id.toString() || author._id.toString() == book.author){%> selected=true <%}%>><%=author.name%></option>
 
                             <%}
                             else{%>
