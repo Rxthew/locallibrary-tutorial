@@ -93,12 +93,78 @@ exports.genre_create_post = [
     }
 ]
 
-exports.genre_delete_get = (req,res) => {
-    res.send('Not Implemented: Genre delete GET');
+exports.genre_delete_get = (req,res,next) => {
+    async.parallel({
+        genre : function(callback){
+           Genre.findById(req.params.id)
+           .exec(callback)
+       },
+       genre_books : function(callback){
+           Book.find({genre : req.params.id})
+           .exec(callback)
+       }
+   },function getDeleteGenreForm(err,results){
+         if(err){
+            return next(err)
+         }
+         if(results.genre == null){
+            res.redirect('/catalog/genres')
+         }
+         res.render('genre_delete',{
+            title: 'Delete genre',
+            genres: results.genre,
+            genre_books: results.genre_books
+         })
+
+   })
 }
 
-exports.genre_delete_post = (req,res) => {
-    res.send('Not Implemented: Genre delete POST');
+exports.genre_delete_post = (req,res,next) => {
+
+    const doesGenreHaveBooks = function(genreBooks){
+        if(genreBooks.length > 0){
+            return true
+        }
+        else{
+            return false
+        }
+        
+    }
+
+    const deleteGenre = function(){
+        Genre.findByIdAndRemove(req.body.genreid, (err)=>{
+            if(err){
+                return next(err)
+            }
+        })
+    }
+
+    async.parallel({
+        genre : function(callback){
+           Genre.findById(req.params.id)
+           .exec(callback)
+       },
+       genre_books : function(callback){
+           Book.find({genre : req.params.id})
+           .exec(callback)
+       }
+   },function deleteGenreProcess(err,results){
+         if(err){
+            return next(err)
+         }
+         if(doesGenreHaveBooks(results.genre_books)){
+            res.render('genre_delete',{
+                title: 'Delete genre',
+                genres: results.genre,
+                genre_books: results.genre_books
+            })
+         }
+         else{
+            deleteGenre()
+            res.redirect('/catalog/genres')
+         }
+
+   })
 }
 
 exports.genre_update_get = (req,res) => {
