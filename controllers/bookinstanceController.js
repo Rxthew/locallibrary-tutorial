@@ -105,12 +105,30 @@ exports.bookinstance_create_post = [
     }
 ]
 
-exports.bookinstance_delete_get = (req,res) => {
-    res.send('Not Implemented: Bookinstance delete GET');
+exports.bookinstance_delete_get = (req,res,next) => {
+    BookInstance.findById(req.params.id)
+    .populate('book')
+    .exec(function getDeleteBookCopyForm(err,bookinstance){
+        if(err){
+            return next(err)
+        }
+        res.render('bookinstance_delete',{
+            title: 'Delete Book Copy',
+            bookinstance
+
+        })
+    })
+   
 }
 
-exports.bookinstance_delete_post = (req,res) => {
-    res.send('Not Implemented: Bookinstance delete POST');
+exports.bookinstance_delete_post = (req,res,next) => {
+    BookInstance.findByIdAndRemove(req.body.copyid)
+    .exec(function deleteBookCopy(err){
+        if(err){
+            return next(err)
+        }
+        res.redirect('/catalog/bookinstances/')
+    })
 }
 
 exports.bookinstance_update_get = (req,res) => {
