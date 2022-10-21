@@ -112,7 +112,7 @@ exports.genre_delete_get = (req,res,next) => {
          }
          res.render('genre_delete',{
             title: 'Delete genre',
-            genres: results.genre,
+            genre: results.genre,
             genre_books: results.genre_books
          })
 
@@ -155,7 +155,7 @@ exports.genre_delete_post = (req,res,next) => {
          if(doesGenreHaveBooks(results.genre_books)){
             res.render('genre_delete',{
                 title: 'Delete genre',
-                genres: results.genre,
+                genre: results.genre,
                 genre_books: results.genre_books
             })
          }
