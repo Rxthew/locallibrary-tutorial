@@ -200,7 +200,7 @@ exports.book_delete_get = (req,res,next) => {
         if(err){
             return next(err)
         }
-        if(results.genre == null){
+        if(results.book == null){
             res.redirect('/catalog/books')
         }
         res.render('book_delete',{
@@ -224,7 +224,7 @@ exports.book_delete_post = (req,res,next) => {
     }
 
     const deleteBook = function(){
-        Book.findByIdAndRemove(req.body.bookId, (err)=>{
+        Book.findByIdAndRemove(req.body.bookid, (err)=>{
             if(err){
                 return next(err)
             }
