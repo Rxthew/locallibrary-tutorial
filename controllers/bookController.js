@@ -181,14 +181,89 @@ exports.book_create_post = [
 
 ]
 
-exports.book_delete_get = (req,res) => {
-    res.send('Not Implemented: Book delete GET');
+exports.book_delete_get = (req,res,next) => {
+    async.parallel({
+        book: function(callback){
+            Book.findById(req.params.id)
+            .populate('author')
+            .populate('genre')
+            .exec(callback)
+
+
+        },
+        book_instance: function(callback){
+            BookInstance.find({book: req.params.id})
+            .exec(callback)
+
+        }
+    },function getDeleteBookForm(err,results){
+        if(err){
+            return next(err)
+        }
+        if(results.genre == null){
+            res.redirect('/catalog/books')
+        }
+        res.render('book_delete',{
+            title: results.book.title,
+            book: results.book,
+            book_instances: results.book_instance
+        })
+
+    })
 }
 
-exports.book_delete_post = (req,res) => {
-    res.send('Not Implemented: Book delete POST');
-}
+exports.book_delete_post = (req,res,next) => {
 
+    const doesBookHaveCopies = function(copies){
+        if(copies.length > 0){
+            return true
+        }
+        else{
+            return false
+        }
+    }
+
+    const deleteBook = function(){
+        Book.findByIdAndRemove(req.body.bookId, (err)=>{
+            if(err){
+                return next(err)
+            }
+        })
+    }
+
+
+    async.parallel({
+        book: function(callback){
+            Book.findById(req.params.id)
+            .populate('author')
+            .populate('genre')
+            .exec(callback)
+
+
+        },
+        book_instance: function(callback){
+            BookInstance.find({book: req.params.id})
+            .exec(callback)
+
+        }
+    },function deleteBookProcess(err,results){
+        if(err){
+            return next(err)
+        }
+        if(doesBookHaveCopies(results.book_instance)){
+            res.render('book_delete',{
+                title: results.book.title,
+                book: results.book,
+                book_instances: results.book_instance
+            })   
+        }
+        else{
+            deleteBook()
+            res.redirect('/catalog/books')
+        }
+
+    })
+}
 exports.book_update_get = (req,res,next) => {
 
     const checkApplicableGenres = function(responseData){
