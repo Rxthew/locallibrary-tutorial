@@ -34,7 +34,11 @@
                     <strong>Due back: </strong>
                     <span><%=bookinstance.due_back_formatted%></span>
                 </p>
-            <% }%>    
+            <% }%>
+            <hr>
+              <p>
+                <a href="<%=bookinstance.url%>/delete">Delete copy</a>
+              </p>     
         </div>
       </div>
     </div>
