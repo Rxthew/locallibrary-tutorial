@@ -306,7 +306,7 @@ exports.book_update_get = (req,res,next) => {
         if(results.book === null){
             const genErr = new Error('Book not found.')
             genErr.status = 404
-            return (next(genErr))
+            return next(genErr)
         }
         checkApplicableGenres(results)
         renderBookForm(results)

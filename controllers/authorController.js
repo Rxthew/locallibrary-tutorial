@@ -182,13 +182,78 @@ exports.author_delete_post = (req,res,next) => {
     )
 }
 
-exports.author_update_get = (req,res) => {
-    res.send('Not Implemented: Author update GET');
+exports.author_update_get = (req,res,next) => {
+    Author.findById(req.params.id).exec(function getAuthorToUpdate(err,authordata){
+        if(err){
+            return next(err)
+        }
+        if(authordata === null){
+            const genErr = new Error('Author not found');
+            genErr.status = 404;
+            return next(genErr)
+        }
+        res.render('author_form',{
+            title: 'Update Author',
+            author: authordata
+            
+            
+        })
+        
+
+    })
+    
 }
 
-exports.author_update_post = (req,res) => {
-    res.send('Not Implemented: Author update POST');
-}
+exports.author_update_post = [
+    body('first_name')
+    .trim()
+    .isLength({min: 1})
+    .escape()
+    .withMessage('First name must be specified.')
+    .isAlphanumeric()
+    .withMessage('First name has non-alphanumeric characters.'),
+    body('family_name')
+    .trim()
+    .isLength({min: 1})
+    .escape()
+    .withMessage('Family name must be specified.')
+    .isAlphanumeric()
+    .withMessage('Family name has non-alphanumeric characters.'),
+    body('date of birth','Invalid date of birth')
+    .optional({checkFalsy: true})
+    .isISO8601()
+    .toDate(),
+    body('date of death','Invalid date of death')
+    .optional({checkFalsy: true})
+    .isISO8601()
+    .toDate(),
+    function updateAuthor(req,res,next){
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            res.render('author_form',{
+                title: 'Create Author',
+                author: req.body,
+                errors: errors.array()
+            })
+            return
+        }
+        else{
+            const author = new Author({
+                first_name : req.body.first_name,
+                family_name: req.body.family_name,
+                date_of_birth: req.body.date_of_birth,
+                date_of_death: req.body.date_of_death,
+                _id: req.params.id
+            })
+            Author.findByIdAndUpdate(req.params.id,author,{},function getUpdatedAuthor(err,updated){
+                if(err){
+                    return next(err)
+                }
+                res.redirect(updated.url)
+            })
+        }
+    }
+]
 
 
 
